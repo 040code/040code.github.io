@@ -3,10 +3,9 @@ slug:       "2019/03/21/spring-boot-graphql"
 title:      "GraphQL + Spring Boot"
 subtitle:   "Queries, mutations and subscription in Java"
 date:       2019-03-21
-cover:      "./glow-lichttoren.jpg"
-imageTw:    "./sping-boot-graphql-tw.jpg"
-imageFb:    "./sping-boot-graphql-fb.jpg"
-generate-card: true
+cover:      ./glow-lichttoren.jpg
+imageTw: ./2019-03-21-spring-boot-graphql-tw.png 
+imageFb: ./2019-03-21-spring-boot-graphql-fb.png
 tags:
   - graphql
   - spring
