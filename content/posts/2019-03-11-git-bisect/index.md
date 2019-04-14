@@ -8,6 +8,7 @@ imageFb:    "./2019-03-13-git-bisect-fb.png"
 imageTw:    "./2019-03-13-git-bisect-tw.png"
 authors:    ["jeroen"]
 asciinema:  true
+type:        post
 ---
 
 I want to tell you a little story about what happened to me a few days ago.
