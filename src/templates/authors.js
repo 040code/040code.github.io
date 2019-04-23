@@ -17,11 +17,22 @@ class Authors extends React.Component {
 
     return (
       <Layout location={this.props.location} title={pageTitle}>
-        <SEO title={pageTitle} />
-        <Hero title={pageTitle} />
+        <SEO
+          title={author.frontmatter.title}
+          path={author.frontmatter.slug}
+          cover={author.frontmatter.cover && author.frontmatter.cover.publicURL}
+        />
+
+        <Hero
+          heroImg={author.frontmatter.cover && author.frontmatter.cover.publicURL}
+          title={author.frontmatter.title}
+        />
 
         <Wrapper>
           <AuthorBio author={author} />
+        </Wrapper>
+
+        <Wrapper>
           <h1>Posts authored by "{this.props.pageContext.author}"</h1>
           <PostsList posts={posts} />
         </Wrapper>
@@ -60,6 +71,12 @@ export const pageQuery = graphql`
         twitter
         linkedin
         email
+        cover {
+          publicURL
+        }
+        avatar {
+          publicURL
+        }
       }
     }
   }

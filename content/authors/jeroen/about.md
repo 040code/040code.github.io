@@ -1,7 +1,8 @@
 ---
 title: "Jeroen Knoops"
 slug: jeroen 
-cover: ./jeroen.png
+cover: ./vanmoll.jpg
+avatar: ./jeroen.png
 language: en
 github: JeroenKnoops
 twitter: johnnybusca
