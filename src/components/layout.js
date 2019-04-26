@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import Header from './Header'
+import Menu from './SideMenu'
 import Footer from './Footer'
 import siteConfig from '../../data/siteConfig'
 
@@ -13,7 +13,7 @@ class Template extends React.Component {
     return (
       <Fragment>
         <GlobalStyle />
-        <Header headerLinks={siteConfig.headerLinks} />
+        <Menu headerLinks={siteConfig.headerLinks} />
         <div style={{ margin: '0 0' }}>{children}</div>
         <Footer siteConfig={siteConfig} />
       </Fragment>
