@@ -14,7 +14,7 @@ class Template extends React.Component {
       <Fragment>
         <GlobalStyle />
         <Header headerLinks={siteConfig.headerLinks} />
-        <div style={{ margin: '60px 0' }}>{children}</div>
+        <div style={{ margin: '0 0' }}>{children}</div>
         <Footer siteConfig={siteConfig} />
       </Fragment>
     )

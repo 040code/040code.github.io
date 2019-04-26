@@ -6,6 +6,7 @@ twitter: niekos77
 linkedin: niekpalm
 email: dev.npalm@gmail.com
 cover: ./noodle_niek.jpg
+avatar: ./niek.jpg
 language: en
 type: author
 ---

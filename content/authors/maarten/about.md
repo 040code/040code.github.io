@@ -6,6 +6,7 @@ twitter: MMz_
 linkedin: maartenmetz
 email: mmz.source@gmail.com
 cover: ./htc.jpg
+avatar: ./maarten.png
 language: en
 type: author
 ---

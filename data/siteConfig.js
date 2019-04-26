@@ -20,7 +20,7 @@ module.exports = {
   disqusShortname: '040code',
   headerLinks: [
     {
-      label: '🏡',
+      label: '🏡 040 blog',
       url: '/',
     },
     {

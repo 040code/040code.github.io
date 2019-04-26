@@ -33,7 +33,7 @@ class Authors extends React.Component {
         </Wrapper>
 
         <Wrapper>
-          <h1>Posts authored by "{this.props.pageContext.author}"</h1>
+          <h1 style={{ margin: '0 0 2em 0' }}>Posts authored by "{this.props.pageContext.author}"</h1>
           <PostsList posts={posts} />
         </Wrapper>
       </Layout>
@@ -71,6 +71,9 @@ export const pageQuery = graphql`
         twitter
         linkedin
         email
+        avatar {
+          publicURL
+        }
         cover {
           publicURL
         }
