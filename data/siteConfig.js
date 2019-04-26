@@ -36,7 +36,7 @@ module.exports = {
       url: '/authors/jeroen'
     },
     {
-      label: 'Stefan van den Oor',
+      label: 'Stefan van den Oord',
       url: '/authors/stefan'
     }
   ],
