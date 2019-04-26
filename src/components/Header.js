@@ -10,7 +10,7 @@ const HeaderWrapper = styled.header`
   display: block;
   width: 100%;
   z-index: 1000;
-  background-color: rgba(32, 35, 42, 0.85);
+  background-color: rgba(32, 35, 42, 0.9);
 `
 
 const HeaderNav = styled.nav`

@@ -5,7 +5,7 @@ github: npalm
 twitter: niekos77
 linkedin: niekpalm
 email: dev.npalm@gmail.com
-cover: ./gatsby-cover.png
+cover: ./noodle_niek.jpg
 language: en
 type: author
 ---

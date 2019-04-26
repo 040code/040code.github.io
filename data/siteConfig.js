@@ -24,13 +24,21 @@ module.exports = {
       url: '/',
     },
     {
-      label: 'Blog',
-      url: '/',
+      label: 'Niek Palm',
+      url: '/authors/niek'
     },
     {
-      label: 'About',
-      url: '/gatsby-starter-morning-dew',
+      label: 'Maarten Metz',
+      url: '/authors/maarten'
     },
+    {
+      label: 'Jeroen Knoops',
+      url: '/authors/jeroen'
+    },
+    {
+      label: 'Stefan van den Oor',
+      url: '/authors/stefan'
+    }
   ],
   // Footer information (ex: Github, Netlify...)
   footerLinks: [
