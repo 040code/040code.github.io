@@ -77,9 +77,6 @@ export const pageQuery = graphql`
         cover {
           publicURL
         }
-        avatar {
-          publicURL
-        }
       }
     }
   }
