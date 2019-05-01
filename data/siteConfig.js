@@ -41,5 +41,34 @@ module.exports = {
     },
   ],
   // Footer information (ex: Github, Netlify...)
-  footerLinks: [],
+  footerLinks: [
+    [
+      '040 code © 2019',
+      {
+        label: 'Gatsby',
+        prefix: 'Buildt with ',
+        url: 'https://www.gatsbyjs.org/',
+      },
+    ],
+    [
+      'Blog',
+      {
+        label: 'home',
+        prefix: '',
+        url: '/',
+      },
+      {
+        label: 'about',
+        prefix: '',
+        url: '/about',
+      },
+    ],
+    [
+      'Source',
+      {
+        label: 'Github',
+        url: 'https://github.com/040code/',
+      },
+    ],
+  ],
 }
