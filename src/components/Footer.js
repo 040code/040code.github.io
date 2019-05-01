@@ -125,7 +125,6 @@ class Footer extends React.Component {
               </a>
               .
             </p>
-
           </div>
           {footerLinks.map((column, i) => {
             return <FooterColumn column={column} key={`footer-column-${i}`} />
