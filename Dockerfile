@@ -3,8 +3,9 @@ MAINTAINER Niek Palm <dev.npalm@gmail.com>
 
 WORKDIR /app
 ADD . /app
-RUN npm install && npm install -g gatsby-cli
-RUN npm run build
+RUN rm -rf node_modules
+RUN npm install -g yarn@1.15.2
+RUN yarn && yarn build
 
 
 FROM nginx:1.15.3
