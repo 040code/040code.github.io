@@ -48,7 +48,7 @@ The output we capture in a variable `APP_ID` for later use.
 Before you can deploy a branch, we need to crate a branch in Amplify. To avoid we run the command if a the branch already exists we do a quick check. You can also add a password to protect our web app via basic authentication. 
 
 ```bash
-export 
+export BRANCH_NAME=test
 branch_count=$(aws amplify list-branches --app-id $APP_ID | \
   jq -r '[.branches[] | select(.branchName | contains("'$BRANCH_NAME'") )] | length')
 
