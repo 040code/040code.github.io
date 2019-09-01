@@ -54,8 +54,9 @@ branch_count=$(aws amplify list-branches --app-id $APP_ID | \
 
 if [[ $branch_count == 0 ]]; then
     basic_auth=$(echo -n blog:somebetterpwd | openssl base64)
-    aws amplify create-branch --app-id $APP_ID --branch-name \ 
-    $BRANCH_NAME  --enable-basic-auth --basic-auth-credentials $basic_auth
+    aws amplify create-branch --app-id $APP_ID \ 
+    --branch-name $BRANCH_NAME \ 
+    --enable-basic-auth --basic-auth-credentials $basic_auth
 fi
 ```
 
@@ -71,7 +72,8 @@ aws s3 cp $BRANCH_NAME.zip s3://$S3_BUCKET_NAME
 No we need to find a way to trigger the deployment. The option `--source-url` for starting a deployment does not mention tha a S3 url is an option as well. So we tried it and it works perfect.
 
 ```bash
-aws amplify start-deployment --app-id $APP_ID --branch-name $BRANCH_NAME \ 
+aws amplify start-deployment --app-id $APP_ID \ 
+  --branch-name $BRANCH_NAME \ 
   --source-url s3://$S3_BUCKET_NAME/$BRANCH_NAME.zip
 ```
 
