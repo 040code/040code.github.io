@@ -15,7 +15,6 @@ tags:
   - aws
   - cicd
   - amplify
-  - aws
   - cloud
 authors:
   - niek
@@ -29,7 +28,7 @@ authors:
   <i class="fab fa-github" style="font-size: 200%">&nbsp;</i>Source code for this post</a></p>
 
 ## Introduction
-Lat year Amazon released Amplify Console, a feature to easily deploy any branch for you web application to the cloud. Connected Git systems are, GitHub, GItLab, BitBucked and CodeCommit. Which limit the usage if you code resides in a self hosted Git. Later they added a manual deploy option to deploy based on a ZIP file that can be uploaded via the web interface or via S3. Let's explore how we can automat the manual option for a self hosted Git server.
+Lat year Amazon released Amplify Console, a feature to easily deploy any branch for you web application to the cloud. Connected Git systems are, GitHub, GItLab, BitBucked and CodeCommit. Which limit the usage if you code resides in a self hosted Git. Later they added a manual deploy option to deploy based on a ZIP file that can be uploaded via the web interface or via S3. Let's explore how we can automate the manual option for a self hosted Git server.
 
 
 ![manual](./manual.png)
@@ -80,5 +79,5 @@ Another option to do a deployment is via sending the zip archive to a signed S3 
 So that is all we have to do for automating a manual deployment. A script snippets shown above a available as an script on [GitHub](https://github.com/npalm/aws-amplify-deploy).
 
 <asciinema-player src="/2019/09/02/automating-the-manual-aws-amplify-deploy/deploy.json"
-  cols="180" rows="15" autoplay="true" loop="true" speed="1.5">
+  cols="180" rows="15" autoplay="true" loop="true" speed="2.0">
 </asciinema-player>
