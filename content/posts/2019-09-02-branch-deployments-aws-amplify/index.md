@@ -21,21 +21,22 @@ authors:
 ---
 
 
-*This post explain how to deploy a branch from a private Git server to AWS Amplify Console for a web application.*
+*This post explain how to deploy a branch from a self hosted Git server to AWS Amplify Console for a web application.*
 
 <p style="text-align: right">
   <a href="https://github.com/npalm/aws-amplify-deploy" target="sourcecode">
   <i class="fab fa-github" style="font-size: 200%">&nbsp;</i>Source code for this post</a></p>
 
 ## Introduction
-Lat year Amazon released Amplify Console, a feature to easily deploy any branch for you web application to the cloud. Connected Git systems are, GitHub, GItLab, BitBucked and CodeCommit. Which limit the usage if you code resides in a self hosted Git. Later they added a manual deploy option to deploy based on a ZIP file that can be uploaded via the web interface or via S3. Let's explore how we can automate the manual option for a self hosted Git server.
-
+Lat year Amazon released Amplify Console, a feature to easily deploy any branch for you web application to the cloud. Connected Git systems are, GitHub, GItLab, BitBucked and CodeCommit. Which limit the usage if you code resides in a self hosted Git. Later Amazon added a manual deploy option to deploy based on a zip file. The zip archive can be uploaded via the web interface, an HTTP link or via an S3 bucket. Would be handy if we can automate this process to utilize this AWS feature in a self hosted Git server. 
 
 ![manual](./manual.png)
 
+Let's explore how we can automate the manual option for a self hosted Git server.
+
 
 ## Step 1 - Create your app
-The first step is to create you app in Amplify, you can do this in the web console but, we don't like manual steps. So for we we automated this via a simple script.
+The first step is to create you app in Amplify, you can do this in the web console but, we don't like manual steps. Creating your app is as simple as the the one liner below.
 
 ```bash
 export APP_ID=$(aws amplify create-app --name blog | jq -r '.app.appId'
@@ -76,7 +77,7 @@ aws amplify start-deployment --app-id $APP_ID --branch-name $BRANCH_NAME \
 
 Another option to do a deployment is via sending the zip archive to a signed S3 link which will be provided if you leave out the `--source-url` option. 
 
-So that is all we have to do for automating a manual deployment. A script snippets shown above a available as an script on [GitHub](https://github.com/npalm/aws-amplify-deploy).
+So that is all we have to do for automating a manual deployment. A script based on the snippets shown above a available on [GitHub](https://github.com/npalm/aws-amplify-deploy).
 
 <asciinema-player src="/2019/09/02/automating-the-manual-aws-amplify-deploy/deploy.json"
   cols="180" rows="15" autoplay="true" loop="true" speed="2.0">
