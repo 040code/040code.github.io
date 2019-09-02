@@ -28,7 +28,7 @@ authors:
   <i class="fab fa-github" style="font-size: 200%">&nbsp;</i>Source code for this post</a></p>
 
 ## Introduction
-Lat year Amazon released Amplify Console, a feature to easily deploy any branch for you web application to the cloud. Connected Git systems are, GitHub, GItLab, BitBucked and CodeCommit. Which limit the usage if you code resides in a self hosted Git. Later Amazon added a manual deploy option to deploy based on a zip file. The zip archive can be uploaded via the web interface, an HTTP link or via an S3 bucket. Would be handy if we can automate this process to utilize this AWS feature in a self hosted Git server. 
+Last year Amazon released Amplify Console, a feature to easily deploy any branch for your web application to the cloud. Connected Git systems are, GitHub, GitLab, BitBucket and CodeCommit. Which limitted the usage if you code resides in a self hosted Git. Later Amazon added a manual deploy option to deploy based on a zip file. The zip archive can be uploaded via the web interface, an HTTP link or via an S3 bucket. Would be handy if we can automate this process to utilize this AWS feature in a self hosted Git server. 
 
 ![manual](./manual.png)
 
@@ -45,7 +45,7 @@ export APP_ID=$(aws amplify create-app --name blog | jq -r '.app.appId'
 The output we capture in a variable `APP_ID` for later use. 
 
 ## Step 2 - Create branch
-Before you can deploy a branch, we need to crate a branch in Amplify. To avoid we run the command if a the branch already exists we do a quick check. You can also add a password to protect our web app via basic authentication. 
+Before you can deploy a branch, we need to create a branch in Amplify. To avoid we run the command if a the branch already exists we do a quick check. You can also add a password to protect our web app via basic authentication. 
 
 ```bash
 export BRANCH_NAME=test
@@ -61,7 +61,7 @@ fi
 ```
 
 ## Step 3 - deployment
-Finally we can deploy our app. Find a way to deploy automated for the case Amazon call manually was a bit hard due to a lock of documentation and posts. For doing a deployment from a non connected Git (aka manual deployment) you have the option in we web console to provide a public link, upload file, or ink to file in S3. The AWS CLI docs does not mention the S3 option. The post  [Deploy files stored on Amazon S3, Dropbox, or your Desktop to the AWS Amplify Console](https://aws.amazon.com/blogs/mobile/deploy-files-s3-dropbox-amplify-console/) suggest to upload the file ot a S3 and create a lambda that will a deployment for a new file. We choose a slightly different approach. First we send our app as zip to S3.
+Finally we can deploy our app. Finding a way to deploy automated in the case Amazon was call manually, was a bit hard due to the lack of documentation and posts. For doing a deployment from a non connected Git (aka manual deployment) you have the option in we web console to provide a public link, upload file, or ink to file in S3. The AWS CLI docs does not mention the S3 option. The post [Deploy files stored on Amazon S3, Dropbox, or your Desktop to the AWS Amplify Console](https://aws.amazon.com/blogs/mobile/deploy-files-s3-dropbox-amplify-console/) suggest to upload the file ot a S3 and create a lambda that will a deployment for a new file. We choose a slightly different approach. First we send our app as zip to S3.
 
 ```bash
 yarn build && cd build
@@ -69,7 +69,7 @@ zip -r $BRANCH_NAME.zip .
 aws s3 cp $BRANCH_NAME.zip s3://$S3_BUCKET_NAME
 ```
 
-No we need to find a way to trigger the deployment. The option `--source-url` for starting a deployment does not mention tha a S3 url is an option as well. So we tried it and it works perfect.
+Now we need to find a way to trigger the deployment. The option `--source-url` for starting a deployment does not mention that a S3 url is an option as well. So we tried it and it works perfect.
 
 ```bash
 aws amplify start-deployment --app-id $APP_ID \ 
