@@ -1,0 +1,91 @@
+---
+slug:        "2019/09/07/full-stack-fest-2019"
+title:       "Full Stack Fest 2019"
+subtitle:    "3 days, 1 track, 18 mind-blowing talks."
+date:        2019-09-07
+cover:       ./sitges.jpg
+coverDescription: "sitges"
+coverLink:   "https://www.google.com/maps/@41.2368365,1.8233564,16z"
+imageFb:     ./2019-09-02-/automating-the-manual-aws-amplify-deploy-fb.png
+imageTw:     ./2019-09-02-/automating-the-manual-aws-amplify-deploy-tw.png
+type:        post
+comments:    false
+tags: 
+  - fullstack 
+  - frontend 
+  - backend 
+  - conference 
+authors:
+  - jeroen
+---
+
+*This post contains a brief summary of what I've heard on [Full Stack Fest 2019](https://2019.fullstackfest.com].*
+
+## Introduction
+
+I've been visiting Full Stack Fest from the very first edition back in 2012. I think it's a remarkable single track conference with topics which are really relevant for modern developers.
+
+Previous years we also wrote blogs about it, these can be found here:
+- [All](https://040code.github.io/tags/fullstack)
+- [2018 - frontend days](https://040code.github.io/2018/09/18/full-stack-fest-2018-frontend)
+- [2018 - backend days](https://040code.github.io/2018/09/05/full-stack-fest-2018)
+- [2017 - frontend days](https://040code.github.io/2017/09/08/full-stack-fest-2017-frontend)
+- [2017 - backend days](https://040code.github.io/2017/09/05/full-stack-fest-2017)
+
+This year the conference is three days and there's no clear distinguish between frontend and backend days.
+The location has changed. We're now in Sitges, a beach place near Barcelona.
+
+## The first day - 2019-09-04
+
+### Host
+
+We were welcomed by [Sara Vieira](https://2019.fullstackfest.com/speakers/sara-vieira). She works at codesandbox, which we really like. I also like her humor. She is very direct and I like it very much.
+
+### Lee Byron - We're gunna program like it's 1999
+
+I've seen [Lee Byron](https://2019.fullstackfest.com/speakers/lee-byron) at [ReactEurope](https://www.react-europe.org) in Paris and this talk had some of the same elements. I really admire Lee for all his work and in showing everybody how we need to continue to change the abstractions, syntax and mental models. He shows the past in the future. Also liked the Svelte code example.
+
+### Developers tools
+by [Ashley Williams](https://2019.fullstackfest.com/speakers/ashley-williams)
+
+I'm not sure anymore how the talk was called, but she had an amazing talk on making developers tools.
+In her work for Rust / WebAssembly she sees that it's very important to understand how developers use your tool. You don't make a product, your enriching a developer.
+There is something like [Language Strangeness Budget](https://words.steveklabnik.com/the-language-strangeness-budget). When creating tools or clis, this is very important to keep in mind.
+
+Our products are like the Fire Flowers. They turn Mario (a developer) into a Fire Mario! Senior developers should become Fire Mario Enablers.
+
+### Spreading the JAM throughout your CI workflow
+by [Brian Douglas](https://2019.fullstackfest.com/speakers/brian-douglas)
+
+Nice comparison with Baseball. We're using a JAMstack for this blog (gatsby). Brian showed what the benefits are of JAMstacks. The static pages can be served everywhere. Github has some good workflows to automatically publish sites.
+Showing Github Actions, now, netlify and so on.
+He showed a project [Open-sauced](https://github.com/bdougie/open-sauced). It's a frontend with github API as backend.
+
+### How to build a social network entirely on serverless
+by [Yan Cui](https://2019.fullstackfest.com/speakers/yan-cui)
+
+Interesting talk on how Yan migrated a monolith to a [s8s](https://aws.amazon.com/serverless/) environment. How it saves a lot of money. How it impacted the lead times for features and how he approached it. He showed a little monolith diagram of the application and a big diagram with the current lambda implementation. The latter looked a lot bigger, but as a matter of fact, was a lot less complex. The first diagram had simple boxes with a lot of functionality in it. The last one had a lot of boxes with isolated functions.
+He suggested to put all features in separate github repositories and give the task of deployment to each repository. Monorepos were not easy to use.
+
+### A programming language for a continuous delivery world.
+by [Ellen Chisa](https://2019.fullstackfest.com/speakers/ellen-chisa)
+Ellen complained about how long it takes to build a simple app. She wanted a simple app to register her mood, but months later, she was finally ready with setting up Rails, Heroku, Twillio, and so on. The end result is workable for herself, but can not even be shared, so there is something wrong. Too much accidental complexity.
+
+She's no co-founder of [dark-lang](https://darklang.com/). Dark is a holistic programming language, structured editor, and infrastructure, for building backend web services. It's for frontend, backend, and mobile engineers.
+
+This is all in Alpha testing, but she did some cool live coding to show the basic of dark-lang. We were all very impressed and kinda speechless.
+
+### Applied Accessibility: Practical Tips for Building More Accessible Front-Ends
+by [Sara Soueidan](https://2019.fullstackfest.com/speakers/sara-soueidan)
+
+Very good presentation on the topic of a13y. She showed why it's so important and how you can improve your apps.
+Although it was already late, people wanted to hear her complete story and that's a compliment!
+
+It has a nice contrast with the prior presentation... this feels like a lot of accidental complexity.
+
+
+
+
+
+
+
