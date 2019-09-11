@@ -1,70 +1,78 @@
 module.exports = {
-  siteTitle: '040code',
-  siteDescription: 'A developers blog',
-  authorName: '040 code',
-  twitterUsername: 'niekos77',
+  siteTitle: 'Open Sourceress',
+  siteDescription: 'Kernel Linux e outras mágicas',
+  authorName: 'Open Soureceress',
+  twitterUsername: 'OpenSourceresss',
   authorAvatar: '',
   multilangPosts: false, // enable/disable flags in post lists
   authorDescription: ``,
-  siteUrl: 'https://040code.github.io/',
-  disqusSiteUrl: 'https://www.disqus.com/',
+  siteUrl: 'http://open-sourceress.com/',
+  disqusSiteUrl: 'https://open-sourceress.disqus.com/',
   // Prefixes all links. For cases when deployed to maxpou.fr/gatsby-starter-morning-dew/
   pathPrefix: '/', // Note: it must *not* have a trailing slash.
-  siteCover: '/images/cover.jpg',
-  googleAnalyticsId: 'UA-97020149-1',
+  siteCover: '/images/img-fundo.jpg',
+  googleAnalyticsId: '',
   background_color: '#ffffff',
   theme_color: '#222222',
   display: 'standalone',
-  icon: 'src/assets/gatsby-icon.png',
-  postsPerPage: 7,
-  disqusShortname: '040code',
+  icon: 'src/assets/tux.png',
+  postsPerPage: 6,
+  disqusShortname: 'open-sourceress',
+  headerTitle: 'Open Sourceress',
+  headerLinksIcon: 'tux.png', //  (leave empty to disable: '')
   headerLinks: [
     {
-      label: '🏡 040 blog',
+      label: '🏡 Open Sourceress',
       url: '/',
     },
     {
-      label: 'About',
+      label: 'Sobre o blog',
       url: '/about',
-    },
-    {
-      label: 'Niek Palm',
-      url: '/authors/niek',
-    },
-    {
-      label: 'Maarten Metz',
-      url: '/authors/maarten',
-    },
-    {
-      label: 'Jeroen Knoops',
-      url: '/authors/jeroen',
-    },
-    {
-      label: 'Stefan van den Oord',
-      url: '/authors/stefan',
     },
   ],
   // Footer information (ex: Github, Netlify...)
   footerLinks: [
     [
-      '040 code © 2019',
+      'Open Sourceress © 2019',
       {
         label: 'Gatsby',
         prefix: 'Build with ',
         url: 'https://www.gatsbyjs.org/',
       },
+      {
+        label: 'gatsby-starter-morning-dew',
+        prefix: 'Theme Using ',
+        url: 'https://github.com/maxpou/gatsby-starter-morning-dew',
+      },
+      {
+        label: '040code',
+        prefix: 'Theme Using ',
+        url: 'https://github.com/040code/',
+      },
+      {
+        label: 'GitHub',
+        prefix: 'Hosted with by ',
+        url: 'https://github.com',
+      },
     ],
     [
-      'Blog',
+      'Explore',
       {
-        label: 'home',
+        label: 'Home',
         prefix: '',
         url: '/',
       },
       {
-        label: 'about',
+        label: 'Quem sou eu?',
         prefix: '',
         url: '/about',
+      },
+    ],
+    [
+      'Siga o Blog',
+      {
+        label: 'Twitter',
+        url: 'https://twitter.com/OpenSoureceresss',
       },
     ],
     [
