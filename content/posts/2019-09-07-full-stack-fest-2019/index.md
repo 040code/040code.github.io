@@ -3,7 +3,7 @@ slug:        "2019/09/07/full-stack-fest-2019"
 title:       "Full Stack Fest 2019"
 subtitle:    "3 days, 1 track, 18 mind-blowing talks."
 date:        2019-09-07
-cover:       ./sitges.jpg
+cover:       ./fsf-sitges.jpg
 coverDescription: "sitges"
 coverLink:   "https://www.google.com/maps/@41.2368365,1.8233564,16z"
 imageFb:     ./2019-09-02-/automating-the-manual-aws-amplify-deploy-fb.png
@@ -19,7 +19,7 @@ authors:
   - jeroen
 ---
 
-*This post contains a brief summary of what I've heard on [Full Stack Fest 2019](https://2019.fullstackfest.com].*
+*This post contains a brief summary of what I've heard on [Full Stack Fest 2019](https://2019.fullstackfest.com).*
 
 ## Introduction
 
@@ -98,7 +98,7 @@ It has a nice contrast with the prior presentation... this feels like a lot of a
 ### CSS Houdini Today
 by [Una Kravets](https://2019.fullstackfest.com/speakers/una-kravets)
 
-Una did a great job in showing the possibilities of Houdini and how this can change the way websites will look. Houdini is not available in all brwosers, but it's getting there. In Chrome you can already use it when you enable a flag; `chrome://flags/#enable-experimental-web-platform-features` Once enabled, you can start programming in CSS. See [extra-css](https://extra-css.netlify.com) for more examples. And if you have the flag enabled, you already see this in the header of this paragraph. :)
+Una did a great job in showing the possibilities of Houdini and how this can change the way websites will look. Houdini is not available in all brwosers, but it's getting there. In Chrome you can already use it when you enable a flag; `chrome://flags/#enable-experimental-web-platform-features` Once enabled, you can start programming in CSS. See [extra-css](https://extra-css.netlify.com) for more examples.
 
 [Link to presentation](https://www.youtube.com/watch?v=yZ-HpepLIY8)
 
@@ -150,17 +150,24 @@ A great talk on how you can make teams work. I especially liked the part where s
 ### Standardizing JavaScript Decorators in TC39
 by [Daniel Ehrenberg](https://2019.fullstackfest.com/speakers/daniel-ehrenberg)
 
-Daniel is part of the [TC39](https://github.com/tc39). He explained how the stages work in TC39. He's currently responsible for 3 proposals in Stage 3; [`BigInt`](https://github.com/tc39/proposal-bigint), [`Class Public Instance Fields & Private Instance Fields`](https://github.com/tc39/proposal-class-fields) and [Private instance methods and accessors](https://github.com/tc39/proposal-private-methods), and 1 proposal in Stage 2; [Decorators](https://github.com/tc39/proposal-decorators). The last one you might already have seen in ember, Angular or MobX. Aligning the implementations is a very hard job. They all seem to have a slight different idea on decorators. It's up to Daniel (and TC39 which have members of the ember, angular in it) to come up with a solution that doesn't break the web.
+Daniel is part of the [TC39](https://github.com/tc39). He explained how the stages work in TC39. He's currently responsible for 3 proposals in Stage 3; [BigInt](https://github.com/tc39/proposal-bigint), [Class Public Instance Fields & Private Instance Fields](https://github.com/tc39/proposal-class-fields) and [Private instance methods and accessors](https://github.com/tc39/proposal-private-methods), and 1 proposal in Stage 2; [Decorators](https://github.com/tc39/proposal-decorators). The last one you might already have seen in ember, Angular or MobX. Aligning the implementations is a very hard job. They all seem to have a slight different idea on decorators. It's up to Daniel (and TC39 which have members of the ember, angular in it) to come up with a solution that doesn't break the web.
 
 [Link to presentation](https://www.youtube.com/watch?v=GLi37QPSOv4)
 
 ### HTTP/3 - HTTP over QUIC is the next generation
 by [Daniel Stenberg](https://2019.fullstackfest.com/speakers/daniel-stenberg)
 
+Daniel is the creator of `curl`, so he knows a few things about HTTP. HTTP/2 did improve a lot, but Daniel explained how the boxes in between the server and the client are very helpful. They see traffic passing by and they start *helping* us. This might look useful, but it is not. Especially not when you want to improve the network layer. That's why HTTP/3 will use UDP instead of TCP. Of course this gives a lot of other interesting problems. Company networks often see UDP as a DDoS attack and blocks it, but in order to improve the speed of the internet, we need to change the protocol. The Head-on-line problem shifted from HTTP level to TCP level when switching to HTTP/2. This causes all streams to be blocked if a package is missing. HTTP/3 with QUIC can resolve the HOL problem on TCP level. This means only one stream is blocked when a package is missing. But it's a long way... There are a lot of boxes in between..
+
 [Link to presentation](https://www.youtube.com/watch?v=idViw4anA6E)
 
 ### Rust, WebAssembly, and the future of Serverless
 by [Steve Klabnik](https://2019.fullstackfest.com/speakers/steve-klabnik)
+
+I love Rust, so I'm not going to talk a lot about this presentation. Steve explains a lot about it and how Rust and the Rust Toolchain can be used for WASM. I recommend everybody to see the presentation. WASM (together with WASI) can be the future of s8s. Currently Docker is the container, but a browser can also be the container with WASM / WASI.
+
 [Link to presentation](https://www.youtube.com/watch?v=CMB6AlE1QuI)
 
-### Lightning Talks
+### Overall
+
+FSF 2019 was again a big success. Thanks [codegram](https://conferences.codegram.com/) for organizing it. 
