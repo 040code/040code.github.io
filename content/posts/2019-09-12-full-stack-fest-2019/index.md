@@ -1,13 +1,13 @@
 ---
-slug:        "2019/09/07/full-stack-fest-2019"
+slug:        "2019/09/12/full-stack-fest-2019"
 title:       "Full Stack Fest 2019"
 subtitle:    "3 days, 1 track, 18 mind-blowing talks."
-date:        2019-09-07
+date:        2019-09-12
 cover:       ./fsf-sitges.jpg
 coverDescription: "sitges"
 coverLink:   "https://www.google.com/maps/@41.2368365,1.8233564,16z"
-imageFb:     ./2019-09-02-/automating-the-manual-aws-amplify-deploy-fb.png
-imageTw:     ./2019-09-02-/automating-the-manual-aws-amplify-deploy-tw.png
+imageFb:     ./2019-09-12-/2019-09-12-full-stack-fest-2019-fb.png
+imageTw:     ./2019-09-12-/2019-09-12-full-stack-fest-2019-tw.png
 type:        post
 comments:    false
 tags: 
