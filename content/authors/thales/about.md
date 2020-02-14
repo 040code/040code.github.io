@@ -1,7 +1,7 @@
 ---
 title: "Thales Sousa"
 slug: thales 
-cover: ./vanmoll.jpg
+cover: ./cover.jpg
 avatar: ./thales.png
 language: en
 github: tminussi
