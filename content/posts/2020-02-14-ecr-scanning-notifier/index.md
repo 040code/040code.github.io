@@ -3,8 +3,8 @@ slug:        "2020/02/14/ecr-scanning-notifier"
 title:       "AWS ECR Vulnerabilities Notifier"
 subtitle:    "Docker images may be vulnerable. We want to know how vulnerable."
 date:        2020-02-14
-cover:       ./slack-message.png
-coverDescription: "Slack"
+cover:       ./cover.jpg
+coverDescription: "Random place during Glow in 2019"
 imageFb:     ./2020-02-14-ecr-scanning-notifier-fb.png
 imageTw:     ./2020-02-14-ecr-scanning-notifier-tw.png
 type:        post
@@ -14,7 +14,7 @@ tags:
   - serverless 
   - slack 
 authors:
-  - niek
+  - thales
 ---
 
 ## Introduction
