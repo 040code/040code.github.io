@@ -6,8 +6,8 @@ date:        2020-02-14
 cover:       "./slack-message.png"
 coverDescription: "sitges"
 coverLink:   "https://www.google.com/maps/@41.2368365,1.8233564,16z"
-imageFb:     ./slack-message.png
-imageTw:     ./slack-message.png
+imageFb:     ./2020-02-14-ecr-scanning-notifier-fb.png
+imageTw:     ./2020-02-14-ecr-scanning-notifier-tw.png
 type:        post
 comments:    false
 tags: 
