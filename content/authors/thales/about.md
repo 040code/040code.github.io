@@ -1,7 +1,7 @@
 ---
 title: "Thales Sousa"
 slug: thales 
-cover: ./cover.jpg
+cover: ./cover.png
 avatar: ./thales.png
 language: en
 github: tminussi
