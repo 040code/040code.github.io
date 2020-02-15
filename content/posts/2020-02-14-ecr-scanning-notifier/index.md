@@ -1,31 +1,37 @@
 ---
 slug:        "2020/02/14/ecr-scanning-notifier"
 title:       "AWS ECR Vulnerabilities Notifier"
-subtitle:    "We only want to be bothered once a new vulnerabilitu is found"
+subtitle:    "We only want to be bothered once a new vulnerability is found"
 date:        2020-02-14
 cover:       ./cover.jpg
-coverDescription: "Random place during Glow in 2019"
+coverDescription: "Diving in the sea of colors - Glow 2019"
+coverLink: "https://goo.gl/maps/Pmo2wUq862Fd7Kop9"
 imageFb:     ./2020-02-14-ecr-scanning-notifier-fb.png
 imageTw:     ./2020-02-14-ecr-scanning-notifier-tw.png
 type:        post
+asciinema:   true
 tags: 
   - docker 
   - vulnerabilities 
   - serverless 
-  - aws 
+  - aws
+  - terraform
+  - lambda
 authors:
   - thales
   - niek
 ---
 
-## Introduction
+
+*This post explains how to scan docker images on AWS ECR and get notified when a new vulnerability is found.*
 
 <p style="text-align: right">
-  <a href="https://github.com/philips-labs/aws-ecr-scanning-slack-notificationsaws-amplify-deploy" target="sourcecode">
+  <a href="https://github.com/philips-labs/aws-ecr-scanning-slack-notifications" target="sourcecode">
   <i class="fab fa-github" style="font-size: 200%">&nbsp;</i>Source code for this post</a></p>
-  
-On October 2019, AWS released a nice [feature](https://aws.amazon.com/about-aws/whats-new/2019/10/announcing-image-scanning-for-amazon-ecr/) on AWS ECR (Elastic Container Registry). They introduced the ability to scan docker images hosted within ECR in order to detect vulnerabilities. T
 
+## Introduction
+
+On October 2019, AWS released a nice [feature](https://aws.amazon.com/about-aws/whats-new/2019/10/announcing-image-scanning-for-amazon-ecr/) on AWS ECR (Elastic Container Registry). They introduced the ability to scan docker images hosted within ECR in order to detect vulnerabilities.
 
 ECR scanning is free of charge, but you can only scan the same image every 24 hours. You get throttled if you make more than 1 request within 1 day. Also scan are only done on a push, but it is not only your change, while you push a change that can introduce a vulnerability. At the moment a new vulnerability found it could impact your image as well. Besides inspecting for example daily the scan result we would like only to get bothered once the scan results are changed, for example a new critical is found. 
 
@@ -55,7 +61,6 @@ resource "aws_ecr_repository" "my_repo" {
 ```
 
 ## Notifying Changes
-
 You don't want to be notified every single time a image was scanned, do you? You only want to be notified when there were vulnerabilities detected for a new image or if the vulnerabilities for a previously scanned image have changed. This means that this state must be stored somewhere. DynamoDB is a great choice here because we can easily store such state there and we can also react to any Table changes using DynamoDB Streams. Do you smell an Event Driven Architecture already?
 
 ![architecture](aws-ecr-notification-architecture.png "Slack Message")
@@ -64,7 +69,6 @@ You don't want to be notified every single time a image was scanned, do you? You
 ## Getting our hands dirty
 
 ### Scanning images
-
 For our use case, we decided to put all the ECR repositories to be scanned in a `.json` file within an S3 bucket. Everytime the Lambda function runs, it downloads that file, parses it and issues `listImages` for every repository defined and `startImageScan` for every image found.
 
 Using the Node.js SDK and AWS SDK, we can easily put it together, see [github](https://github.com/philips-labs/aws-ecr-scanning-slack-notifications/blob/develop/src/lambda/image-scanner.js) for the full code.
@@ -99,7 +103,6 @@ const scan = async () => {
 This task is as easy as that. It invokes the SDK to start an image scan. This process will now be run asynchronously in AWS.
 
 ### Analysing the results for a Scanned image
-
 This could be achieved by reacting to CloudWatch events in AWS, but we decided to go the easy way and periodically poll ECR for the Scan Findings. If something was found, we store the findings in DynamoDB.
 
 ```javascript
@@ -186,6 +189,12 @@ You can now decide on your own if the vulnerabilities detected are worth investi
 ![Vulnerabilities](cve.png "Vulnerabilities")
 
 ## Putting all together.
-In this post we have mostly concentrate on the lambda code required for creating the components. Besides the lambda code the github repo also contains the infrastructure code (Iac) required to create the resources in AWS and connected them.
+In this post we have mostly concentrate on the lambda code required for creating the components. Besides the lambda code the github repo also contains the infrastructure code (Iac) required to create the resources in AWS and connected them. Just follow th instruction mentioned in this repo and should have your docker images scanning up in minutes.
+
+
+<asciinema-player src="/2020/02/14/ecr-scanning-notifier/aws-ecr-notify.json"
+  cols="180" rows="15" autoplay="true" loop="true" speed="2.0">
+</asciinema-player>
+
 
 For the purposes of this post, we used Slack. But the way the Lambda function is built, it could really be any HTTP endpoint, meaning you could even notify your internal systems of potential vulnerability changes in a Docker image.
