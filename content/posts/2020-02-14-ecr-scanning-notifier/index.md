@@ -71,7 +71,7 @@ You don't want to be notified every single time a image was scanned, do you? You
 ### Scanning images
 For our use case, we decided to put all the ECR repositories to be scanned in a `.json` file within an S3 bucket. Everytime the Lambda function runs, it downloads that file, parses it and issues `listImages` for every repository defined and `startImageScan` for every image found.
 
-Using the Node.js SDK and AWS SDK, we can easily put it together, see [github](https://github.com/philips-labs/aws-ecr-scanning-slack-notifications/blob/develop/src/lambda/image-scanner.js) for the full code.
+Using the Node.js SDK and AWS SDK, we can easily put it together, see [github](https://github.com/philips-labs/aws-ecr-scanning-slack-notifications) for the full code.
 
 ```javascript
 const scan = async () => {
