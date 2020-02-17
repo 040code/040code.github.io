@@ -189,7 +189,7 @@ You can now decide on your own if the vulnerabilities detected are worth investi
 ![Vulnerabilities](cve.png "Vulnerabilities")
 
 ## Putting all together.
-In this post we have mostly concentrate on the lambda code required for creating the components. Besides the lambda code the github repo also contains the infrastructure code (Iac) required to create the resources in AWS and connected them. Just follow th instruction mentioned in this repo and should have your docker images scanning up in minutes.
+In this post we have mostly concentrated on the lambda code required to create the components. Apart from the Lambda code, the GitHub repo also contains the Infrastructure Code (Iac) required to create the resources in AWS in order to glue them together. Just follow th instruction smentioned in this repo and you should have your docker images scanner up in minutes.
 
 
 <asciinema-player src="/2020/02/14/ecr-scanning-notifier/aws-ecr-notify.json"
