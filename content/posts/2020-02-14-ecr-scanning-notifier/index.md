@@ -33,7 +33,7 @@ authors:
 
 On October 2019, AWS released a nice [feature](https://aws.amazon.com/about-aws/whats-new/2019/10/announcing-image-scanning-for-amazon-ecr/) on AWS ECR (Elastic Container Registry). They introduced the ability to scan docker images hosted within ECR in order to detect vulnerabilities.
 
-ECR scanning is free of charge, but you can only scan the same image every 24 hours. You get throttled if you make more than 1 request within 1 day. Also scan are only done on a push, but it is not only your change, while you push a change that can introduce a vulnerability. At the moment a new vulnerability found it could impact your image as well. Besides inspecting for example daily the scan result we would like only to get bothered once the scan results are changed, for example a new critical is found. 
+ECR scanning is free of charge, but you can only scan the same image every 24 hours. You get throttled if you make more than 1 request within 1 day. Naturally, scans are only triggered when an image is pushed. This blog explains how to trigger it the scans at your own pace (for example, on a daily basis).
 
 Since we love automation, we have decided to automate scanning task using a full serverless application that sends via slack a notification when there is a change in the scanning results.
 
