@@ -28,7 +28,7 @@ _This post explains how to run GitHub actions on self-hosted scalable runners on
 
 ## Introduction
 
-Last year GitHub released [self-hosted action runners](https://github.blog/2019-11-05-self-hosted-runners-for-github-actions-is-now-in-beta/) which already empower you to run GitHub actions on your own machines. At the time of, the feature was quite limited; it lacked an API and only supported repository level runners. We could already automate the deployment of a single self-hosted runner for one repo with Terraform on AWS. But the clear drawback here is that you will pay AWS for hosting your instances, even if there is no workload to execute. Over the last months, GitHub released an [API](https://github.blog/changelog/2020-01-27-github-actions-api-beta/) for self-hosted action runners, and support for [org level runners](https://github.blog/changelog/2020-04-22-github-actions-organization-level-self-hosted-runners/) was added. Therefore, now is a good moment to have a second look on how to utilize self-hosted runners, and scale the self-hosted runners up and down based on workload.
+Last year GitHub released [self-hosted action runners](https://github.blog/2019-11-05-self-hosted-runners-for-github-actions-is-now-in-beta/) which already empower you to run GitHub actions on your own machines. At the time of, the feature was quite limited; it lacked an API and only supported repository level runners. We could already automate the deployment of a single self-hosted runner for one repo with Terraform on AWS. But the clear drawback here is that you will pay AWS for hosting your instances, even if there is no workload to execute. Over the last months, GitHub released an [API](https://github.blog/changelog/2020-01-27-github-actions-api-beta/) for self-hosted action runners, and support for [org level runners](https://github.blog/changelog/2020-04-22-github-actions-organization-level-self-hosted-runners/) was added. Therefore, now is a good moment to have a second look on how to utilize self-hosted runners, and scale the self-hosted runners up and down based on workload using the GitHub API. Similar to scaling runners for GitHub we wrote an [article](/2017/12/09/runners-on-the-spot) on how to scale runners for [GitLab](https://docs.gitlab.com/runner/) which Terraform community module you find [here](https://github.com/npalm/terraform-aws-gitlab-runner).
 
 ## Why?
 
@@ -56,19 +56,19 @@ For the orchestration we build 4 different lambda's: First a lambda to handle th
 
 ### Webhook
 
-This lambda receives events via the API gateway sent via the GitHub App for each check run event. The lambda will check if the event is signed with correct secret. Next it filters only for the check run event that requires an action runner, other events are simply dropped. In other words the we only keep the events that are created once a new workflow is triggered. The events we accept are published on a SQS queue. Messages on the queue are delayed for 30 seconds by default. This allows possible idle action runners to start the workflow execution.
+This [lambda](https://github.com/philips-labs/terraform-aws-github-runner/tree/master/modules/webhook) receives events via the API gateway sent via the GitHub App for each check run event. The lambda will check if the event is signed with correct secret. Next it filters only for the check run event that requires an action runner, other events are simply dropped. In other words the we only keep the events that are created once a new workflow is triggered. The events we accept are published on a SQS queue. Messages on the queue are delayed for 30 seconds by default. This allows possible idle action runners to start the workflow execution.
 
 ### Scale up
 
-This lambda will receive messages from the SQS queue. For each message the lambda first verifies if the workflow has not yet been started. When the workflow is still queued, the lambda will create an AWS spot instance via a launch template. Before creating the instance, a new runner will be registered to GitHub. The token will be temporary stored in the AWS parameter store (SSM). During the boot the AWS instance installs all requirements via a `user_data` script. The script will install docker, git and the action runner, which is fetched from a S3 bucket. Finally the runner is configured with parameters fetched from the parameter store, and is then ready to consume workloads.
+This [lambda](https://github.com/philips-labs/terraform-aws-github-runner/tree/master/modules/runners) will receive messages from the SQS queue. For each message the lambda first verifies if the workflow has not yet been started. When the workflow is still queued, the lambda will create an AWS spot instance via a launch template. Before creating the instance, a new runner will be registered to GitHub. The token will be temporary stored in the AWS parameter store (SSM). During the boot the AWS instance installs all requirements via a `user_data` script. The script will install docker, git and the action runner, which is fetched from a S3 bucket. Finally the runner is configured with parameters fetched from the parameter store, and is then ready to consume workloads.
 
 ### Scale down
 
-This lambda is triggered by a cloud watch event. Every time it runs it will try to remove all the registered runners from GitHub. Only inactive runners can be removed. Trying to remove an active one will simply fail, resulting in a 500 response. For all the removed runners from GitHub the lambda will terminate the EC2 spot instances so the bill stops. The scale up and scale down lambda share the same code base, and are released as one zip.
+This [lambda](https://github.com/philips-labs/terraform-aws-github-runner/tree/master/modules/runners) is triggered by a cloud watch event. Every time it runs it will try to remove all the registered runners from GitHub. Only inactive runners can be removed. Trying to remove an active one will simply fail, resulting in a 500 response. For all the removed runners from GitHub the lambda will terminate the EC2 spot instances so the bill stops. The scale up and scale down lambda share the same code base, and are released as one zip.
 
 ### Update Binary
 
-This lambda will download the action runner binary to avoid unnecessary latency during creation of the runners. We found out in our first week of running our setup that downloading the action runner binary could take up to 15 minutes, therefore we build a simple lambda to cache the artifact in a bucket.
+This [lambda](https://github.com/philips-labs/terraform-aws-github-runner/tree/master/modules/runner-binaries-syncer) will download the action runner binary to avoid unnecessary latency during creation of the runners. We found out in our first week of running our setup that downloading the action runner binary could take up to 15 minutes, therefore we build a simple lambda to cache the artifact in a bucket.
 
 ## Build it
 
@@ -92,28 +92,28 @@ Client secret:  some-secret
 
 ### Lambda artifacts
 
-Before we can actually deploy the infrastructure we need to build or download the lambda functions. You can clone the module repo and use the script in `.ci/build.sh` to build the 3 lambda zip files. But the easier option is just to download the release artifacts from the repo. We even provide a small utility module to download the artifacts.
+Before we can actually deploy the infrastructure we need to build or download the lambda functions. You can clone the module repo and use the script in `.ci/build.sh` to build the 3 lambda zip files. But the easier option is just to download the [release artifacts](https://github.com/philips-labs/terraform-aws-github-runner) from the repo. We even provide a small utility module to download the artifacts.
 
 Create a new workspace (directory) and add the following terraform code.
 
 ```HCL
 module "github-runner_download-lambda" {
   source  = "philips-labs/github-runner/aws//modules/download-lambda"
-  version = "0.0.1"
+  version = "0.1.0"
 }
 
   lambdas = [
     {
       name = "webhook"
-      tag  = "v0.0.1"
+      tag  = "v0.1.0"
     },
     {
       name = "runners"
-      tag  = "v0.0.1"
+      tag  = "v0.1.0"
     },
     {
       name = "runner-binaries-syncer"
-      tag  = "v0.0.1"
+      tag  = "v0.1.0"
     }
   ]
 }
@@ -144,8 +144,8 @@ module "vpc" {
   cidr = "10.0.0.0/16"
 
   azs             = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  private_subnets = ["10.1.0.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.1.001.0/24", "10.1.002.0/24", "10.1.003.0/24"]
 
   enable_nat_gateway = true
   single_nat_gateway = true
@@ -162,7 +162,7 @@ resource "random_password" "random" {
 
 module "runners" {
   source  = "philips-labs/github-runner/aws"
-  version = "0.0.1"
+  version = "0.1.0"
 
   aws_region  = local.aws_region
   vpc_id      = module.vpc.vpc_id
@@ -201,6 +201,8 @@ Save your configuration and run `terraform init` and `terraform apply`. Once Ter
 aws lambda invoke --function-name \
   $(terraform output -json lambda_syncer | jq -r) respone.json
 ```
+
+> The module we released for creating the infrastructure supports [IAM permissions boundaries](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) for those who have to run on shared AWS environments. For more details checkout the [example](https://github.com/philips-labs/terraform-aws-github-runner/tree/master/examples/permissions-boundary).
 
 ### Configure the GitHub App part 2
 
@@ -278,4 +280,8 @@ The abilities of GitHub self-hosted runners are arleady quit neat. But creating 
 
 By delivery an API for actions GitHub gives you the option to build your own setup, the fact that we always need to have a runner registered is quite an hack. Also, the way for scaling down will not win a beauty contest but is necessary because the API does not provide an option to verify whether a runner is still active. Furthermore, the cache of the distribution is bit of a hack to work around some crazy slow downloads that we had experienced.
 
-But given all those hacks we are still quite happy with this setup. Untill GitHub releases the components need to orchestrate the life cycle of an action runner, we will happily use this setup.
+But given all those hacks we are still quite happy with this setup. Until GitHub releases the components need to orchestrate the life cycle of an action runner, we will happily use this setup.
+
+## Acknowledgements
+
+The module discussed in this article was developed together with [Gertjan Maas](https://github.com/gertjanmaas).
