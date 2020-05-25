@@ -24,7 +24,7 @@ img {
 
 a {
   text-decoration: none;
-  color: rgba(34,34,34,0.8);
+  color: #0366d6;
 }
 
 ul,
