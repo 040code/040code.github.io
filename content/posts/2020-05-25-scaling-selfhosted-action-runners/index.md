@@ -153,7 +153,7 @@ module "vpc" {
 }
 ```
 
-You can already run and apply the terraform code, once we have finisehd with the setup. We can now add the GitHub action runner module. Events sent on to the webhook will be signed with a secret, therefore we generate a password with [Terraform random provider](https://www.terraform.io/docs/providers/random/). Ensure you set the variables for the lambda zip to the download lambda artifacts, and also add the id's, keys and base64 encoded secret for the GitHub app to the configuration.
+You can already run and apply the terraform code, once we have finished with the setup. We can now add the GitHub action runner module. Events sent to the webhook will be signed with a secret, therefore we generate a password with [Terraform random provider](https://www.terraform.io/docs/providers/random/). Ensure you set the variables for the lambda zip to the download lambda artifacts, and also add the id's, keys and base64 encoded secret for the GitHub app to the configuration.
 
 ```HCL
 resource "random_password" "random" {
