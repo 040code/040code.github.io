@@ -54,7 +54,7 @@ module.exports = {
       '040 code © 2019',
       {
         label: 'Gatsby',
-        prefix: 'Build with ',
+        prefix: 'Built with ',
         url: 'https://www.gatsbyjs.org/',
       },
     ],
