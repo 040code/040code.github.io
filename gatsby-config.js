@@ -53,6 +53,7 @@ module.exports = {
           'gatsby-remark-smartypants',
           'gatsby-remark-autolink-headers',
           `gatsby-remark-emoji`,
+          'gatsby-remark-numbered-footnotes',
         ],
       },
     },
