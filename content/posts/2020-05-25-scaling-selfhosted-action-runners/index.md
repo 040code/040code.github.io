@@ -42,7 +42,7 @@ In GitHub every time a workflow is triggered, a `check run` event is created. Ca
 
 ![idea](idea.png 'concept')
 
-Being able to create runners on once a workflow is triggers brings us the possibility to scale uip, question remains now how to scale down? Again we could listen for event and next try to scale down. Since a runner instance is not dedicated to only executing one workload. At the moment another workflow requires a build the, the runner will process this build ass well. This make scaling down based on events less trivial. So we took a slightly different and much simpler approach: every x minutes all runners that ere not busy are removed.
+Being able to create runners once a workflow is triggered brings us the possibility to scale up. Question remains now how to scale down? Again we could listen for event and next try to scale down. Since a runner instance is not dedicated to only executing one workload. At the moment another workflow requires a build the, the runner will process this build as well. This make scaling down based on events less trivial. So we took a slightly different and much simpler approach: every x minutes all runners that are not busy are removed.
 
 You might think why not using [Kubernetes](https://kubernetes.io/)? The reasons for us is quit simple. First, we would like to have a solution that could scale really from zero without making any costs. Second, with Kubernetes we enter a other model of running the GitHub agent, which is not supported (yet?). So, this would introduce some extra obstacles as managing docker in docker. Hence, we favoured this simple and straightforward approach.
 
