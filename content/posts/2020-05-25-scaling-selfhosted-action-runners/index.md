@@ -28,7 +28,7 @@ _This post explains how to run GitHub actions on self-hosted scalable runners on
 
 ## Introduction
 
-Last year GitHub released [self-hosted action runners](https://github.blog/2019-11-05-self-hosted-runners-for-github-actions-is-now-in-beta/) which can DO SOME MAGIC THAT THE READER IS INTERESTED IN. At the time of, the feature was quite limited; it lacked an API and only supported repository level SOMETHING. We were could alreayd automate the deployment of a single runner on dedicated for one repo with Terraform on AWS (MP: is dit met of zonder self-hosted action runners). But the clear drawback here is that you will pay AWS for hosting your instances, even if there is no workload to execute. Over the last months, GitHub released an [API](https://github.blog/changelog/2020-01-27-github-actions-api-beta/) for self-hosted action runners, and support for [org level runners](https://github.blog/changelog/2020-04-22-github-actions-organization-level-self-hosted-runners/) was added. Therefore, now is a good moment to have a second look on how to utilize self-hosted runners to DO THAT MAGIC WE MENTIONED EARLIER, and scale the SOMETHING up and down based on workload.
+Last year GitHub released [self-hosted action runners](https://github.blog/2019-11-05-self-hosted-runners-for-github-actions-is-now-in-beta/) which already empower you to run GitHub actions on your own machines. At the time of, the feature was quite limited; it lacked an API and only supported repository level runners. We could already automate the deployment of a single self-hosted runner for one repo with Terraform on AWS. But the clear drawback here is that you will pay AWS for hosting your instances, even if there is no workload to execute. Over the last months, GitHub released an [API](https://github.blog/changelog/2020-01-27-github-actions-api-beta/) for self-hosted action runners, and support for [org level runners](https://github.blog/changelog/2020-04-22-github-actions-organization-level-self-hosted-runners/) was added. Therefore, now is a good moment to have a second look on how to utilize self-hosted runners, and scale the self-hosted runners up and down based on workload.
 
 ## Why?
 
@@ -38,13 +38,11 @@ Why we are using self-hosted runners? First of all, by running on our own hardwa
 
 The GitHub self-hosted action runner is an agent that you need to install on any machine that needs to pickup and execute workflow. To connect the agent to GitHub you can either choose to register the agent on repo level or org level. For registration you request a registration token ([API](https://developer.github.com/v3/actions/self-hosted-runners/)) and this token is used during the setup of agent. This part is easy to automate, so let's have a look how we can orchestrate the process of creating runners.
 
-In GitHub every time a workflow is triggered, a `check event` is created. Can we use this event to decide wether to scale a runner? Yes, if we find a way to receive and listen for the event. Actually, there are two options: using the webhook at the repo or org level, or using the GitHub app. Here, we will use the GitHub app option. The GitHub app can sent a message to our webhook for every `check run` event and we can easily implement this webhook with a AWS Lambda function. This lambda can verify the event, run some other checks and decide to create a EC2 spot instance to facilitate the execution of the workflow. So we are limiting our selves to linux runners with docker support (MP: ik snap niet helemaal waar de limits vandaan komen, maar dat kan aan mij liggen).
+In GitHub every time a workflow is triggered, a `check run` event is created. Can we use this event to decide wether to scale a runner? Yes, if we find a way to receive and listen for the event. Actually, there are two options: using the webhook at the repo or org level, or using the GitHub app. Here, we will use the GitHub app option. The GitHub app can sent a message to our webhook for every `check run` event and we can easily implement this webhook with a AWS Lambda function. This lambda can verify the event, run some other checks and decide to create a EC2 spot instance to facilitate the execution of the workflow. The EC2 spot instances will be linux based with docker so we can run any containerized workload. By handling the events we
 
 ![idea](idea.png 'concept')
 
-MP: huh, kunnen we dan al upscalen?
-
-After being able to set this (MP: specificeer), the question remains how to scale down SOMETHING. Again we could listen for event and next try to scale down. But it would be not that easy to find out which instance we should remove, and maybe is already executing another workload (MP: deze zin snap ik niet). So we took a slightly different and much simpler approach: every x minutes all runners that ere not busy are removed.
+Being able to create runners on once a workflow is triggers brings us the possibility to scale uip, question remains now how to scale down? Again we could listen for event and next try to scale down. Since a runner instance is not dedicated to only executing one workload. At the moment another workflow requires a build the, the runner will process this build ass well. This make scaling down based on events less trivial. So we took a slightly different and much simpler approach: every x minutes all runners that ere not busy are removed.
 
 You might think why not using [Kubernetes](https://kubernetes.io/)? The reasons for us is quit simple. First, we would like to have a solution that could scale really from zero without making any costs. Second, with Kubernetes we enter a other model of running the GitHub agent, which is not supported (yet?). So, this would introduce some extra obstacles as managing docker in docker. Hence, we favoured this simple and straightforward approach.
 
@@ -52,11 +50,9 @@ You might think why not using [Kubernetes](https://kubernetes.io/)? The reasons 
 
 Before we build scalable runners on AWS, we discuss the architecture in a bit more detail. On AWS we need several infrastructure components and a component to orchestrate the life cycle of the action runners. All infra structure will be created using [HashiCorp Terraform](https://www.terraform.io/). The orchestration layer is build with AWS lambda. All the lambda functions are written in [TypeScript](https://www.typescriptlang.org/) and compiled to NodeJS single file with [zeit ncc](https://github.com/zeit/ncc).
 
-For the orchestration we build 4 different lambda's: (MP: lijstje met webhooks). Each lambda serves a different purpose (MP: no shit sherlock). The action runners will run on AWS spot instances.
+For the orchestration we build 4 different lambda's: First a lambda to handle the GitHub events, two lambda's for scaling up and down. And a last one to synchronize the runner binary. The self-hosted runners will run on AWS spot instances.
 
 ![architecture](architecture.svg 'architecture')
-
-NP: ik zou een formatting gebruiken voor de naam van de lambda's, bv cursief
 
 ### Webhook
 
