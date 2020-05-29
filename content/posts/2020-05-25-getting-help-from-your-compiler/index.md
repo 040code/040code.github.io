@@ -12,11 +12,31 @@ tags:
   - typescript
   - either
   - validation
+  - react
 authors:
   - stefan
 ---
 
-*I'm learning about functional programming. I'm having loads of fun doing that, but I also think my code is improving because of it. In this post I want to share something that I learned about using Either to do form validation in TypeScript.*
+*I'm learning about functional programming. I'm having loads of fun doing that,
+but I also think my code is improving because of it. In this post I want to
+share something that I learned about using Either to do form validation in
+TypeScript.*
+
+<p style="text-align: right">
+  <a href="https://github.com/svdo/either-validation-demo" target="sourcecode">
+  <i class="fab fa-github" style="font-size: 200%">&nbsp;</i>Source code for this post</a></p>
+
+## Contents
+
+- [The Case for Non-Breaking Switches](#the-case-for-non-breaking-switches)
+- [Clever Data Types can Help Too](#clever-data-types-can-help-too)
+- [The Scary Bit 😱](#the-scary-bit-)
+- [Using This In The UI](#using-this-in-the-ui)
+- [Conclusion](#conclusion)
+- [A New Vocabulary](#a-new-vocabulary)
+- [Appendix: lift and lift2](#appendix-lift-and-lift2)
+
+## The Case for Non-Breaking Switches
 
 Some (well, many I guess) programming languages have a construct called a
 `switch` statement. It usually looks something like this (in JavaScript):
@@ -172,7 +192,7 @@ in the appendix below, but for now it's good enough if you conceptually
 understand what it does: it converts `left('passwords differ')` into
 `left(['passwords differ'])`, for example.
 
-### The Scary Bit 😱
+## The Scary Bit 😱
 
 The library that I've been using for this style of (functional) programming in
 TypeScript, is [fp-ts][fp-ts]. It has some concepts that may seem scary if
@@ -321,7 +341,7 @@ export const RegistrationForm = () => {
 
   [...]
 
-  return <form>
+  return <Form>
         <Form.Field>
           <label>Email:</label>
           <Input name="email" value={email}
@@ -344,7 +364,7 @@ export const RegistrationForm = () => {
           onChange={(_, { value }) => setPassword2(value)}
         />
         <Button primary content='Register' />
-  </form>
+  </Form>
 }
 ```
 
@@ -362,7 +382,7 @@ remind you of what our validation function is returning.
 
 In Semantic UI, the `Form` element has to know whether there's an error in the
 form. That's easy, we use the `isLeft` API function of `Either`. So we replace
-the `<form>` element with:
+the `<Form>` element with:
 
 ```tsx
 import { isLeft } from 'fp-ts/lib/Either'
@@ -437,6 +457,10 @@ highly reusable. The other conditionals that you would normally need are now
 abstracted away in the `Either` and `Validation`, so that you can't do it wrong
 anymore. I don't know about you, but I'm happy. 😀
 
+The full source code and a completely working example can be found on
+[github][demo-repo]. As a bonus, it also contains a couple of Jest matchers for
+checking Eithers in unit tests.
+
 ## A New Vocabulary
 
 There is one last observation that I'd like to make. All your "C-style"
@@ -449,7 +473,11 @@ languages, that allow you to talk and reason about code.
 As I challenge myself to use the functional programming concepts more and more,
 like I did in this article, I find that it gives me a whole new vocabulary in a
 similar way, but on a higher abstraction level. Learn how to use `fp-ts` in
-TypeScript, and you use the same constructs in Haskell, PureScript, Scala, etc. So any investment that you make in learning this stuff is not limited to the specific programming language that you learn it for. And it's going to allow you to write your code using higher-level abstractions, thereby reducing hopefully the number of bugs.
+TypeScript, and you use the same constructs in Haskell, PureScript, Scala, etc.
+So any investment that you make in learning this stuff is not limited to the
+specific programming language that you learn it for. And it's going to allow you
+to write your code using higher-level abstractions, thereby reducing hopefully
+the number of bugs.
 
 ## Appendix: lift and lift2
 
@@ -516,3 +544,4 @@ export function lift2<E, A, B, C> (
 [fp-ts]: https://gcanti.github.io/fp-ts
 [semigroup]: https://dev.to/gcanti/getting-started-with-fp-ts-semigroup-2mf7
 [pipe-example]: https://gcanti.github.io/fp-ts/modules/pipeable.ts.html#pipe
+[demo-repo]: https://github.com/svdo/either-validation-demo
