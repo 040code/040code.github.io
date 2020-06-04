@@ -603,7 +603,7 @@ New version:
 
 ```typescript
 const digits = (n: number) =>
-  O.fromPredicate((s: string) => new RegExp(`\^\[0-9\]\{${n}\}\$`).test(s))
+  O.fromPredicate((s: string) => new RegExp(`^[0-9]{${n}}$`).test(s))
 
 const phoneValidator = flow(
   digits(8),
