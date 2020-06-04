@@ -35,6 +35,13 @@ TypeScript.*
 - [Conclusion](#conclusion)
 - [A New Vocabulary](#a-new-vocabulary)
 - [Appendix: lift and lift2](#appendix-lift-and-lift2)
+- [Making the validation functions reusable](#making-the-validation-functions-reusable)
+
+**[Update June 4, 2020]** When continuing to work on this code, I improved one
+important aspect. At the end of this post I added the section [Making the
+validation functions reusable](#making-the-validation-functions-reusable) to
+explain. Also the code in the [github repo][demo-repo] was updated to reflect
+this.
 
 ## The Case for Non-Breaking Switches
 
@@ -537,8 +544,82 @@ export function lift2<E, A, B, C> (
 }
 ```
 
+## Making the validation functions reusable
+
+(This section was added on June 4, 2020)
+
+There is one thing about the code above that kept bothering me. For example, take
+the validation for checking that passwords contain a number:
+
+```typescript
+export const oneNumber = (s: string): Either<string, string> =>
+  /[0-9]/g.test(s) ? right(s) : left(tPasswordOneNumber)
+```
+
+The problem with this approach is that the function combines *two
+responsibilities*: (1) the check whether or not the string satisfies the
+conditions, and (2) attaching the proper error message when the check fails. Do
+you see the problem with this? It's not reusable. Because in another form we
+maybe want to use the same check, but with a different error message. We can do
+better!
+
+First, we can make a completely generic and reusable check function, which even
+lives in a separate more generic file:
+
+```typescript
+import * as O from 'fp-ts/lib/Option'
+
+export const atLeastOneNumber = O.fromPredicate((s: string) => /[0-9]/g.test(s))
+```
+
+This function returns an `Option` instead of an `Either`. An `Option` is  either
+`some(value)`, or `none` (which corresponds to the value being `null` or
+`undefined`). In other words: the function `atLeastOneNumber(str)` gives us
+`none` when the check fails, or `some(str)` when it succeeds.
+
+The second step is specific to the registration form validation, namely
+attaching the proper error message. We do that by taking the output of
+`atLeastOneNumber` and putting it in an `Either` using `fromOption`. This API
+function `fromOption` converts the `some` to a `right`, and the `none` to a
+`left` with the given value. So we get this (`flow` is left-to-right function
+composition[^function-composition]):
+
+```typescript
+const oneNumberValidator = flow(
+  atLeastOneNumber,
+  fromOption(constant(tPasswordOneNumber))
+)
+```
+
+The difference becomes even more apparent with the (admittedly naive) phone
+number validation. Old version:
+
+```typescript
+export const phoneValid = (phone: string): Either<string, string> =>
+  /^[0-9]{8}$/.test(phone) ? right(phone) : left(tInvalidPhone)
+```
+
+New version:
+
+```typescript
+const digits = (n: number) =>
+  O.fromPredicate((s: string) => new RegExp(`\^\[0-9\]\{${n}\}\$`).test(s))
+
+const phoneValidator = flow(
+  digits(8),
+  fromOption(constant(tInvalidPhone))
+)
+```
+
+So now we have an even more generic and completely reusable `digits` checker,
+that you can pass the desired number of digits, and a specialized
+`phoneValidator` that uses it for the registration validation.
+
+<div style="text-align: center; font-size: 3em;">🎉</div>
+
 [^exceptjs]: Except when you're using JavaScript of course, [because then basically anything goes][wat-talk].
 [^lift2]: In TypeScript you can probably define `lift` in such a way that it works for both single-parameter and two-parameter functions, but that's where I draw the line for now.
+[^function-composition]: So `flow` creates a new function that is the sequential combination of the functions you put into it. The call `flow(f,g)(x)` is equivalent to `g(f(x))`. You can read it as "first do `f`, then do `g`" on whatever you pass into it.
 [either-vs-validation]: https://dev.to/gcanti/getting-started-with-fp-ts-either-vs-validation-5eja
 [wat-talk]: https://www.destroyallsoftware.com/talks/wat
 [fp-ts]: https://gcanti.github.io/fp-ts
