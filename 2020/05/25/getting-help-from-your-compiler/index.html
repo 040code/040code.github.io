@@ -99,7 +99,13 @@ TypeScript.</em></p>
 <li><a href="#conclusion">Conclusion</a></li>
 <li><a href="#a-new-vocabulary">A New Vocabulary</a></li>
 <li><a href="#appendix-lift-and-lift2">Appendix: lift and lift2</a></li>
+<li><a href="#making-the-validation-functions-reusable">Making the validation functions reusable</a></li>
 </ul>
+<p><strong>[Update June 4, 2020]</strong> When continuing to work on this code, I improved one
+important aspect. At the end of this post I added the section <a href="#making-the-validation-functions-reusable">Making the
+validation functions reusable</a> to
+explain. Also the code in the <a href="https://github.com/svdo/either-validation-demo">github repo</a> was updated to reflect
+this.</p>
 <h2 id="the-case-for-non-breaking-switches" style="position:relative;"><a href="#the-case-for-non-breaking-switches" aria-label="the case for non breaking switches permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>The Case for Non-Breaking Switches</h2>
 <p>Some (well, many I guess) programming languages have a construct called a
 <code class="language-text">switch</code> statement. It usually looks something like this (in JavaScript):</p>
@@ -537,6 +543,53 @@ it out. 🧐</p>
       <span class="token function">mapLeft</span><span class="token punctuation">(</span><span class="token parameter">e</span> <span class="token operator">=></span> <span class="token punctuation">[</span>e<span class="token punctuation">]</span><span class="token punctuation">)</span>
     <span class="token punctuation">)</span>
 <span class="token punctuation">}</span></code></pre></div>
+<h2 id="making-the-validation-functions-reusable" style="position:relative;"><a href="#making-the-validation-functions-reusable" aria-label="making the validation functions reusable permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Making the validation functions reusable</h2>
+<p>(This section was added on June 4, 2020)</p>
+<p>There is one thing about the code above that kept bothering me. For example, take
+the validation for checking that passwords contain a number:</p>
+<div class="gatsby-highlight" data-language="typescript"><pre class="language-typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> oneNumber <span class="token operator">=</span> <span class="token punctuation">(</span>s<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> Either<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">></span> <span class="token operator">=></span>
+  <span class="token regex">/[0-9]/g</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">right</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">left</span><span class="token punctuation">(</span>tPasswordOneNumber<span class="token punctuation">)</span></code></pre></div>
+<p>The problem with this approach is that the function combines <em>two
+responsibilities</em>: (1) the check whether or not the string satisfies the
+conditions, and (2) attaching the proper error message when the check fails. Do
+you see the problem with this? It’s not reusable. Because in another form we
+maybe want to use the same check, but with a different error message. We can do
+better!</p>
+<p>First, we can make a completely generic and reusable check function, which even
+lives in a separate more generic file:</p>
+<div class="gatsby-highlight" data-language="typescript"><pre class="language-typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> <span class="token constant">O</span> <span class="token keyword">from</span> <span class="token string">'fp-ts/lib/Option'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> atLeastOneNumber <span class="token operator">=</span> <span class="token constant">O</span><span class="token punctuation">.</span><span class="token function">fromPredicate</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">s<span class="token operator">:</span> <span class="token builtin">string</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token regex">/[0-9]/g</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre></div>
+<p>This function returns an <code class="language-text">Option</code> instead of an <code class="language-text">Either</code>. An <code class="language-text">Option</code> is  either
+<code class="language-text">some(value)</code>, or <code class="language-text">none</code> (which corresponds to the value being <code class="language-text">null</code> or
+<code class="language-text">undefined</code>). In other words: the function <code class="language-text">atLeastOneNumber(str)</code> gives us
+<code class="language-text">none</code> when the check fails, or <code class="language-text">some(str)</code> when it succeeds.</p>
+<p>The second step is specific to the registration form validation, namely
+attaching the proper error message. We do that by taking the output of
+<code class="language-text">atLeastOneNumber</code> and putting it in an <code class="language-text">Either</code> using <code class="language-text">fromOption</code>. This API
+function <code class="language-text">fromOption</code> converts the <code class="language-text">some</code> to a <code class="language-text">right</code>, and the <code class="language-text">none</code> to a
+<code class="language-text">left</code> with the given value. So we get this (<code class="language-text">flow</code> is left-to-right function
+composition<sup id="fnref-3"><a href="#fn-3" class="footnote-ref">3</a></sup>):</p>
+<div class="gatsby-highlight" data-language="typescript"><pre class="language-typescript"><code class="language-typescript"><span class="token keyword">const</span> oneNumberValidator <span class="token operator">=</span> <span class="token function">flow</span><span class="token punctuation">(</span>
+  atLeastOneNumber<span class="token punctuation">,</span>
+  <span class="token function">fromOption</span><span class="token punctuation">(</span><span class="token function">constant</span><span class="token punctuation">(</span>tPasswordOneNumber<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre></div>
+<p>The difference becomes even more apparent with the (admittedly naive) phone
+number validation. Old version:</p>
+<div class="gatsby-highlight" data-language="typescript"><pre class="language-typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> phoneValid <span class="token operator">=</span> <span class="token punctuation">(</span>phone<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> Either<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">></span> <span class="token operator">=></span>
+  <span class="token regex">/^[0-9]{8}$/</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>phone<span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">right</span><span class="token punctuation">(</span>phone<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">left</span><span class="token punctuation">(</span>tInvalidPhone<span class="token punctuation">)</span></code></pre></div>
+<p>New version:</p>
+<div class="gatsby-highlight" data-language="typescript"><pre class="language-typescript"><code class="language-typescript"><span class="token keyword">const</span> <span class="token function-variable function">digits</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">n<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span>
+  <span class="token constant">O</span><span class="token punctuation">.</span><span class="token function">fromPredicate</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">s<span class="token operator">:</span> <span class="token builtin">string</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">\^\[0-9\]\{</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>n<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">\}\$</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> phoneValidator <span class="token operator">=</span> <span class="token function">flow</span><span class="token punctuation">(</span>
+  <span class="token function">digits</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token function">fromOption</span><span class="token punctuation">(</span><span class="token function">constant</span><span class="token punctuation">(</span>tInvalidPhone<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre></div>
+<p>So now we have an even more generic and completely reusable <code class="language-text">digits</code> checker,
+that you can pass the desired number of digits, and a specialized
+<code class="language-text">phoneValidator</code> that uses it for the registration validation.</p>
+<div style="text-align: center; font-size: 3em;">🎉</div>
 <div class="footnotes">
 <hr>
 <ol>
@@ -547,6 +600,10 @@ it out. 🧐</p>
 <li id="fn-2">
 <p>In TypeScript you can probably define <code class="language-text">lift</code> in such a way that it works for both single-parameter and two-parameter functions, but that’s where I draw the line for now.</p>
 <a href="#fnref-2" class="footnote-backref">↩</a>
+</li>
+<li id="fn-3">
+<p>So <code class="language-text">flow</code> creates a new function that is the sequential combination of the functions you put into it. The call <code class="language-text">flow(f,g)(x)</code> is equivalent to <code class="language-text">g(f(x))</code>. You can read it as “first do <code class="language-text">f</code>, then do <code class="language-text">g</code>” on whatever you pass into it.</p>
+<a href="#fnref-3" class="footnote-backref">↩</a>
 </li>
 </ol>
 </div></div></section></article></main></div><footer class="Footer__FooterWrapper-sc-1oxe0wr-0 hFicPH"><nav><div class="footer-col"><h5 class="footer-title">040 code © 2019</h5><span class="footer-item">Built with <i></i><a class="footer-link" href="https://www.gatsbyjs.org/">Gatsby</a></span></div><div class="footer-col"><h5 class="footer-title">Blog</h5><span class="footer-item"><a class="footer-link" href="/">home</a></span><span class="footer-item"><a class="footer-link" href="/about">about</a></span></div><div class="footer-col"><h5 class="footer-title">Source</h5><span class="footer-item"><i></i><a class="footer-link" href="https://github.com/040code/">Github</a></span></div></nav></footer></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script>
