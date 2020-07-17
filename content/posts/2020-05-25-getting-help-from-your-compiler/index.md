@@ -1,6 +1,6 @@
 ---
 slug:        "2020/05/25/getting-help-from-your-compiler"
-title:       "Getting Help From Your Compiler"
+title:       "Implementing Form Validation Without Conditional Logic"
 subtitle:    "Using clever data types to reduce the possibilities for mistakes"
 date:        2020-05-25
 cover:       ./cover.jpeg
@@ -18,7 +18,7 @@ authors:
 ---
 
 *I'm learning about functional programming. I'm having loads of fun doing that,
-but I also think my code is improving because of it. In this post I want to
+and I also think my code is improving because of it. In this post I want to
 share something that I learned about using Either to do form validation in
 TypeScript.*
 
@@ -28,8 +28,9 @@ TypeScript.*
 
 ## Contents
 
-- [The Case for Non-Breaking Switches](#the-case-for-non-breaking-switches)
-- [Clever Data Types can Help Too](#clever-data-types-can-help-too)
+- [Contents](#contents)
+- [Less Bugs](#less-bugs)
+- [Clever Data Types](#clever-data-types)
 - [The Scary Bit 😱](#the-scary-bit-)
 - [Using This In The UI](#using-this-in-the-ui)
 - [Conclusion](#conclusion)
@@ -43,84 +44,24 @@ validation functions reusable](#making-the-validation-functions-reusable) to
 explain. Also the code in the [github repo][demo-repo] was updated to reflect
 this.
 
-## The Case for Non-Breaking Switches
+## Less Bugs
 
-Some (well, many I guess) programming languages have a construct called a
-`switch` statement. It usually looks something like this (in JavaScript):
+Today I want to show you a neat technique for form validation. Almost every web
+app will eventually have a form somewhere, and the user input of that form
+usually needs to be validated. You can do that by writing lots of conditions all
+over the place, but in this post I will show you that you can do it _without any
+single condition_ except for the validation logic itself. But the rest of the
+app, including the UI, doesn't have conditional logic. That's great, because it
+significantly reduces the number of mistakes (bugs) you can make. To understand
+this post, you don't need any specific knowledge or experience.
 
-```javascript
-const commentOnDinnerPreference = pref => {
-  let reply = ''
+## Clever Data Types
 
-  switch (pref) {
-    case 'broccoli':
-      reply = 'yes, very healthy'
-
-    case 'pizza hawaii':
-      reply = 'who does not like carbs and fat?'
-  }
-
-  console.debug(reply)
-}
-
-```
-
-There's a few things that are fishy (pun intended) about this piece of code. For
-one, it doesn't say what should be done when a specific dinner preference is not
-addressed in the `switch` statement. You could do that by either exhaustively
-listing all possible dinner preferences, or by adding a `default` case. Another
-issue is that the `break` statements are missing. So when the dinner preference
-is "broccoli", the reply will still be "who doesn't like carbs and fat?", which
-is probably not what you intended. My editor (VS Code) and my compiler/packager
-are perfectly happy with this JavaScript code.
-
-So Typescript maybe? Let's see:
-
-```typescript
-enum DinnerPreference {
-  Broccoli,
-  PizzaHawaii,
-  Fries
-}
-
-const commentOnDinnerPreference = (pref: DinnerPreference) => {
-  let reply = ''
-
-  switch (pref) {
-    case DinnerPreference.Broccoli:
-      reply = 'yes, very healthy'
-      break
-
-    case DinnerPreference.PizzaHawaii:
-      reply = 'who does not like carbs and fat?'
-      break
-  }
-
-  console.debug(reply)
-}
-
-```
-
-Here I actually did get warnings about the missing `break` statements from the
-linter. But the switch still is not exhaustive and there's no feedback on that.
-
-When I do this in Swift for example, it's a lot harder to do this wrong. First,
-there are no `break` statements in Swift, there is no implicit fall-through. In
-other words: a matching case automatically "exits" the switch, if you want
-fall-through you have to make *that* explicit. But it gets better: the compiler
-gives an *error* "switch must be exhaustive" and offers to automatically add
-statements for missing cases. That's a helpful compiler for you, it reduces the
-number of mistakes that you can make!
-
-![Swift gives a compiler error](./swift-switch.png)
-
-## Clever Data Types can Help Too
-
-Let's think a bit about *validation* for a moment. For example, you're writing a
-GUI that contains a form, and you need to validate the elements of that form.
-Making it even more specific: a registration web page where a user can sign up
-for a new account by providing information like e-mail, phone number, and a
-password (twice, to prevent typing mistakes).
+Let's explore a concrete example. Suppose you're writing a GUI that contains a
+form, and you need to validate the elements of that form. Making it even more
+specific: a registration web page where a user can sign up for a new account by
+providing information like e-mail, phone number, and a password (twice, to
+prevent typing mistakes).
 
 This kind of code can easily become a big mess of conditional logic: **if** the
 e-mail field is not empty **and** it is not a valid e-mail address, **then**
@@ -472,7 +413,7 @@ checking Eithers in unit tests.
 
 There is one last observation that I'd like to make. All your "C-style"
 programming languages are basically the same. A loop (for, while), a condition,
-some stuff about objects classes, a switch. When you can write Java, you can
+some stuff about objects/classes, a switch. When you can write Java, you can
 also write Swift or C#. Sure, you need to learn some new APIs, but the basic
 building blocks are all the same. It's a common vocabulary shared by all these
 languages, that allow you to talk and reason about code.
